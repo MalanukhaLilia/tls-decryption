@@ -1,0 +1,42 @@
+services:
+  casdoor-db: 
+    image: mysql:8.0
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: casdoor
+      MYSQL_ROOT_HOST: "%"
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+
+  casdoor-server: 
+    image: casbin/casdoor:latest 
+    platform: linux/amd64 
+    restart: always
+    depends_on:
+      - casdoor-db
+    environment:
+      - RUNNING_IN_DOCKER=true
+      - DRIVER_NAME=mysql
+      - DATA_SOURCE_NAME=root:root@tcp(casdoor-db:3306)/
+      - DB_NAME=casdoor
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./conf:/conf
+
+  casdoor-proxy:
+    image: nginx:latest
+    platform: linux/amd64
+    restart: always
+    ports:
+      - "8443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./cert.pem:/etc/nginx/ssl/cert.pem:ro
+      - ./key.pem:/etc/nginx/ssl/key.pem:ro
+    depends_on:
+      - casdoor-server

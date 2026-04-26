@@ -1,0 +1,18 @@
+# .NET
+bin/
+obj/
+*.user
+.vs/
+
+# Python
+__pycache__/
+.venv/
+env/
+venv/
+.idea/
+.vscode/
+
+# Else
+.DS_Store
+python
+/mysql_data/
