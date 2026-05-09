@@ -1,0 +1,7 @@
+Docker/
+bin/
+obj/
+.git/
+.vs/
+*.user
+*.db

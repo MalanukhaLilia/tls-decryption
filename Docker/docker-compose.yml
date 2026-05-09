@@ -40,3 +40,13 @@ services:
       - ./key.pem:/etc/nginx/ssl/key.pem:ro
     depends_on:
       - casdoor-server
+  tlslab-app:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    ports:
+      - "7266:7266"
+    depends_on:
+      - casdoor-proxy
+    environment:
+      - CASDOOR_URL=https://casdoor-proxy
